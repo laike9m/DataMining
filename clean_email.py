@@ -8,7 +8,7 @@ def clean(filename):
     except:
         print('no such file')
     
-    with open('cleaned_email.txt', 'wt') as ce:
+    with open('cleaned_email_5.txt', 'wt') as ce:
         for line in email:
             fromNode, toNode = line.split() 
             if int(toNode) > 0:
@@ -18,4 +18,4 @@ def clean(filename):
 
 
 if __name__ == '__main__':
-    clean(filename='new_Email-EuAll.txt')
+    clean(filename='new_Email-EuAll_5.txt')

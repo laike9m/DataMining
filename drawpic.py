@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from collections import defaultdict
+import pickle
 
 ## Control Graphs, Edit for better graphs as you need
 LABEL_FLAG = True  # Whether shows labels.NOTE: configure your matplotlibrc for Chinese characters.
@@ -60,21 +61,20 @@ class DrawPic():
         return G
     
     
-    def draw_graph(self, nodeids, filename='graph.p', label_flag=True, remove_isolated=True, different_size=True, iso_level=10, node_size=40):
+    def draw_graph(self, nodeids, filename='Graph.p', label_flag=True, remove_isolated=True, different_size=True, iso_level=10, node_size=40):
         """Reading data from file and draw the graph.If not exists, create the file and re-scratch data from net"""
         
         print("Generating graph...")
         '''
         try:
             with open(filename, 'rb') as f:
-                G = p.load(f)
+                G = pickle.load(f)
         except:
-            G = self.getgraph(nodeid)
+            G = self.getgraph(nodeids)
             with open(filename, 'wb') as f:
-                p.dump(G, f)
+                pickle.dump(G, f)
         '''
         G = self.getgraph(nodeids)
-        
         #nx.draw(G)
         # Judge whether remove the isolated point from graph
         if remove_isolated is True:
@@ -102,9 +102,9 @@ class DrawPic():
         return G
     
 if __name__ == '__main__':
-    recv_most = [179170,422,30,72,298,485,83,366,70524,994]
-    send_most = [83,868,192,2371,10,1417,104,818,240,147]
+    send_most = [39618, 1011, 192, 47181, 104]
+    recv_most = [179170, 220816, 422, 30, 217]
     nodes = set(recv_most + send_most)
     
-    drawpic = DrawPic('cleaned_email.txt')
-    G = drawpic.draw_graph(nodes, filename='graph.p', label_flag=LABEL_FLAG, remove_isolated=REMOVE_ISOLATED, different_size=DIFFERENT_SIZE, iso_level=ISO_LEVEL, node_size=NODE_SIZE)
+    drawpic = DrawPic('cleaned_email_5.txt')
+    G = drawpic.draw_graph([179170, 422], filename='Graph_51.p', label_flag=LABEL_FLAG, remove_isolated=REMOVE_ISOLATED, different_size=DIFFERENT_SIZE, iso_level=ISO_LEVEL, node_size=NODE_SIZE)

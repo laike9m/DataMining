@@ -1,6 +1,5 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-import pickle as p
 from collections import defaultdict
 
 ## Control Graphs, Edit for better graphs as you need
@@ -13,18 +12,19 @@ NODE_SIZE = 40  # Default node size
 
 class DrawPic():
     
-    def __init__(self):
+    def __init__(self, filename):
         self.dict = defaultdict(list)
+        self.filename = filename
         self.generate_dict()
     
     
     def generate_dict(self):
-        #email = open('test.txt')
-        email = open('new_Email-EuAll.txt')
+        email = open(self.filename)
         for line in email:
             fromNode, toNode = line.split()
             self.dict[int(fromNode)].append(int(toNode))
         email.close()
+    
     
     def get_toNodes(self, fromNode_id):
         return self.dict[fromNode_id]
@@ -40,24 +40,27 @@ class DrawPic():
             return 0
     
     
-    def getgraph(self, nodeid):
+    def getgraph(self, nodeids):
         'Get the Graph Object and return it.'
-
-        dict_root = self.get_toNodes(nodeid)  # Get root tree
-    
+        
         G = nx.Graph()  # Create a Graph object
-        for toNodeid1 in dict_root:
-            G.add_node(toNodeid1)
-            for toNodeid2 in dict_root:
-                if toNodeid2 == toNodeid1:
-                    continue
-                if self.getrelations(toNodeid1, toNodeid2):
-                    G.add_edge(toNodeid1, toNodeid2)
+        
+        for nodeid in nodeids:
+            dict_root = self.get_toNodes(nodeid)  # Get root tree
+            if nodeid not in dict_root:
+                dict_root.append(nodeid)
+            for toNodeid1 in dict_root:
+                G.add_node(toNodeid1)
+                for toNodeid2 in dict_root:
+                    if toNodeid2 == toNodeid1:
+                        continue
+                    if self.getrelations(toNodeid1, toNodeid2):
+                        G.add_edge(toNodeid1, toNodeid2)
     
         return G
     
     
-    def draw_graph(self, nodeid, filename='graph.p', label_flag=True, remove_isolated=True, different_size=True, iso_level=10, node_size=40):
+    def draw_graph(self, nodeids, filename='graph.p', label_flag=True, remove_isolated=True, different_size=True, iso_level=10, node_size=40):
         """Reading data from file and draw the graph.If not exists, create the file and re-scratch data from net"""
         
         print("Generating graph...")
@@ -70,7 +73,7 @@ class DrawPic():
             with open(filename, 'wb') as f:
                 p.dump(G, f)
         '''
-        G = self.getgraph(nodeid)
+        G = self.getgraph(nodeids)
         
         #nx.draw(G)
         # Judge whether remove the isolated point from graph
@@ -99,5 +102,9 @@ class DrawPic():
         return G
     
 if __name__ == '__main__':
-    drawpic = DrawPic()
-    G = drawpic.draw_graph(1, filename='graph.p', label_flag=LABEL_FLAG, remove_isolated=REMOVE_ISOLATED, different_size=DIFFERENT_SIZE, iso_level=ISO_LEVEL, node_size=NODE_SIZE)
+    recv_most = [179170,422,30,72,298,485,83,366,70524,994]
+    send_most = [83,868,192,2371,10,1417,104,818,240,147]
+    nodes = set(recv_most + send_most)
+    
+    drawpic = DrawPic('cleaned_email.txt')
+    G = drawpic.draw_graph(nodes, filename='graph.p', label_flag=LABEL_FLAG, remove_isolated=REMOVE_ISOLATED, different_size=DIFFERENT_SIZE, iso_level=ISO_LEVEL, node_size=NODE_SIZE)

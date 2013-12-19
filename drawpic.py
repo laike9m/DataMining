@@ -86,13 +86,13 @@ class DrawPic():
             G.dot_size = {}
             for k, v in L.items():
                 G.dot_size[k] = v
-            node_size = [G.dot_size[v] * 10 for v in G]
+            node_size = [G.dot_size[v] for v in G]
         pos = nx.spring_layout(G, iterations=50)
         nx.draw_networkx_edges(G, pos, alpha=0.2)
         nx.draw_networkx_nodes(G, pos, node_size=node_size, node_color='r', alpha=0.3)
         # Judge whether shows label
         if label_flag is True:
-            nx.draw_networkx_labels(G, pos, alpha=0.5)
+            nx.draw_networkx_labels(G, pos, font_size=6, alpha=0.5)
         #nx.draw_graphviz(G)
         plt.show()
     
